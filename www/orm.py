@@ -11,7 +11,7 @@ async def create_pool(loop, **kw):
         port=kw.get('port', 33066),
         user=kw['user'],
         password=kw['password'],
-        db=kw['iwblog'],
+        db=kw['database'],
         charset=kw.get('charset', 'utf8'),
         autocommit=kw.get('autocommit', True),
         maxsize=kw.get('maxsize', 10),
@@ -35,16 +35,23 @@ async def select(sql, args, size=None):
 
 
 async def execute(sql, args):
-    logging.log(sql)
+    logging.log(1,sql)
     with (await __pool) as conn:
         try:
             cur = await conn.cursor()
             await cur.execute(sql.replace('?', '%s'),args)
-            affected = cur.roucount
+            affected = cur.rowcount
             await cur.close()
         except BaseException as e:
             raise
         return affected
+
+
+def create_args_string(num):
+    L = []
+    for n in range(num):
+        L.append('?')
+    return ','.join(L)
 
 
 class Field(object):
@@ -116,7 +123,7 @@ class ModelMetaclass(type):
         escaped_fields = list(map(lambda f: '`%s`' % f, fields))
         attrs['__mappings__'] = mappings
         attrs['__table__'] = tableName
-        attrs['__primary_kye__'] = primaryKey
+        attrs['__primary_key__'] = primaryKey
         attrs['__fields__'] = fields
         attrs['__select__'] = 'select `%s`, %s from `%s`' % (primaryKey, ','.join(escaped_fields), tableName)
         attrs['__insert__'] = 'insert into `%s`(%s,`%s`) values (%s)' % (tableName, ','.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) +1))
