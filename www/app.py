@@ -1,6 +1,6 @@
 from www.coroweb import add_routes
 import logging;logging.basicConfig(level = logging.INFO)
-
+import jinja2
 import asyncio, os, json, time
 from datetime import datetime
 
@@ -15,11 +15,6 @@ async def init(loop):
     srv = await loop.create_server(app._make_handler(),'127.0.0.1',9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(init(loop))
-loop.run_forever()
-
 
 async def logger_factory(app, handler):
     async def logger(request):
@@ -45,9 +40,14 @@ async def response_factory(app, handler):
             pass
 
 
+loop = asyncio.get_event_loop()
 app = web.Application(loop=loop, middlewares=[
     logger_factory, response_factory
 ])
-init_jinja2(app, filters=dict(datetime=datetime_filter))
+# init_jinja2(app, filters=dict(datetime=datetime_filter))
 add_routes(app, 'handlers')
-add_static(app)
+# add_static(app)
+loop.run_until_complete(init(loop))
+loop.run_forever()
+
+
