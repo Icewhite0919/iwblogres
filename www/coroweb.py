@@ -2,6 +2,7 @@ import asyncio
 import functools
 import inspect
 import logging
+import os
 
 
 def get(path):
@@ -54,6 +55,7 @@ def add_route(app, fn):
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ','.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
+
 def add_routes(app, module_name):
     n = module_name.rfind('.')
     if n == (-1):
@@ -70,3 +72,9 @@ def add_routes(app, module_name):
                 path = getattr(fn, '__route__', None)
                 if method and path:
                     add_route(app, fn)
+
+
+def add_static(app):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    app.router.add_static('/static/', path)
+    logging.info('add static %s => %s' % ('/static/', path))
