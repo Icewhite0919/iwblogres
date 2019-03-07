@@ -13,12 +13,12 @@ from aiohttp import web
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
-        autoescape = kw.get('autoescape', True),
-        block_start_string = kw.get('block_start_string', '{%'),
-        block_end_string = kw.get('block_end_string', '%}'),
-        variable_start_string = kw.get('variable_start_string', '{{'),
-        variable_end_string = kw.get('variable_end_string', '}}'),
-        auto_reload = kw.get('auto_reload', True)
+        autoescape=kw.get('autoescape', True),
+        block_start_string=kw.get('block_start_string', '{%'),
+        block_end_string=kw.get('block_end_string', '%}'),
+        variable_start_string=kw.get('variable_start_string', '{{'),
+        variable_end_string=kw.get('variable_end_string', '}}'),
+        auto_reload=kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
     if path is None:
@@ -43,19 +43,20 @@ async def data_factory(app, handler):
     async def parse_data(request):
         if request.method == 'POST':
             if request.content_type.startswith('application/json'):
-                request.__data__ = await request.join()
+                request.__data__ = await request.json()
                 logging.info('request json: %s' % str(request.__data__))
             elif request.content_type.startswith('application/x-www-form-urlencoded'):
                 request.__data__ = await request.post()
                 logging.info('request form: %s' % str(request.__data__))
-            return (await handler(request))
-        return parse_data
+        return (await handler(request))
+    return parse_data
 
 
 async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
         r = await handler(request)
+        logging.info(r)
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):
@@ -67,6 +68,7 @@ async def response_factory(app, handler):
             resp.content_type = 'text/html;charset=utf-8'
             return resp
         if isinstance(r, dict):
+            logging.info('dict is found...')
             template = r.get('__template__')
             if template is None:
                 resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o:o.__dict__).encode('utf-8'))
@@ -79,7 +81,7 @@ async def response_factory(app, handler):
         if isinstance(r, int) and r >= 100 and r<600:
             return web.Response(r)
         if isinstance(r, tuple) and len(r) == 2:
-            t, m =r
+            t, m = r
             if isinstance(t, int) and t >= 100 and t < 600:
                 return web.Response(r)
         #default:
@@ -110,17 +112,17 @@ async def init(loop):
         port=33066,
         user='icewhite',
         password='2454946495YxL',
-        db='iwblog'
+        database='iwblog'
     )
     app = web.Application(loop=loop, middlewares=[
         logger_factory, response_factory
     ])
-    init_jinja2(app, filter=dict(datetime=datetime_filter))
+    init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
     srv = await loop.create_server(app._make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
-
+    return srv
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
