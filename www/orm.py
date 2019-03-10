@@ -20,7 +20,7 @@ async def create_pool(loop, **kw):
 
 
 async def select(sql, args, size=None):
-    logging.log(sql, args)
+    logging.log(1, sql)
     global __pool
     with (await __pool) as conn:
         cur = await conn.cursor(aiomysql.DictCursor)
