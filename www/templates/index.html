@@ -1,174 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../static/css/layui.css">
-    <script src="../static/layui.js"></script>
-    <script src="../static/jquery-3.3.1.min.js"></script>
-    <script src="../static/iconfont.js"></script>
-    <!--<link rel="stylesheet" href="../static/css/style.css">-->
-    <title>Test users - Icewhite python webpp</title>
-    <style>
-        .icon{
-            width: 1.5em;
-            height: 1.5em;
-            fill: currentColor;
-            overflow: hidden;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>冰白</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+   
+    <!-- Font-Awesome -->
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+
+    <!-- Google Webfonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css" id="theme-styles">
+
+    <!--[if lt IE 9]>      
+        <script src="js/respond.js"></script>
+    <![endif]-->
+    
 </head>
 <body>
-    <!--<canvas id="canvas"></canvas>-->
-    <!--<script type="text/javascript" src="../static/canvas-nest.js"></script>-->
-    <!--<script src="../static/three.min.js"></script>-->
-    <!--<script src="../static/index.js"></script>-->
-    <ul class="layui-nav layui-header layui-anim layui-anim-fadein" lay-filter="" style="position: fixed;width: 100%;top: 0">
-        <li class="layui-nav-item"><a href="">项目1<span class="layui-badge">9</span></a></li>
-        <li class="layui-nav-item layui-this"><a href="">项目2<span class="layui-badge-dot"></span></a></li>
-        <li class="layui-nav-item"><a href="">项目3</a></li>
-        <li class="layui-nav-item layui-layout-right" style="margin-right: 1%">
-            <a href=""><img src="../static/images/mh.jpg" class="layui-nav-img">我</a>
-            <dl class="layui-nav-child">
-                <dd><a href="">修改信息</a></dd>
-                <dd><a href="">安全管理</a></dd>
-                <dd><a href="">注销</a></dd>
-            </dl>
-        </li>
-    </ul>
-    <div class="layui-row layui-container layui-col-xs10 layui-col-xs-offset1 layui-col-md7 layui-col-md-offset1 layui-col-sm7
-    layui-col-sm-offset1 layui-col-lg7 layui-col-lg-offset1" style="margin-top: 6.5em">
-        <ul class="layui-timeline">
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em">
-                        <legend class="layui-timeline-title" style="font-size: 1em">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">元素的内边距在边框和内容区之间。控制该区域最简单的属性是 padding 属性。
-CSS padding 属性定义元素边框与元素内容之间的空白区域。</h5></a>
+    <header>
+        <div class="widewrapper masthead">
+            <div class="container">
+                <a href="index.html" id="logo">
+                    <img src="img/logo.png" alt="clean Blog">
+                </a>
+        
+                <div id="mobile-nav-toggle" class="pull-right">
+                    <a href="#" data-toggle="collapse" data-target=".clean-nav .navbar-collapse">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+
+                <nav class="pull-right clean-nav">
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav nav-pills navbar-nav">
+                            <li>
+                                <a href="index.html">主页</a>
+                            </li>
+                            <li>
+                                <a href="about.html">关于</a>
+                            </li>
+                            <li>
+                                <a href="contact.html">联系我</a>
+                            </li>                        
+                        </ul>
+                    </div>
+                </nav>        
+
+            </div>
+        </div>
+
+        <div class="widewrapper subheader">
+            <div class="container">
+                <div class="clean-breadcrumb">
+                    <a href="#">Blog</a>
+                </div>
+
+                <div class="clean-searchbox">
+                    <form action="#" method="get" accept-charset="utf-8">
+                        <input class="searchfield" id="searchbox" type="text" placeholder="输入关键字...">
+                        <button class="searchbutton" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="widewrapper main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 blog-main">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="img/1.jpg" alt="">
+                                    <h3><a href="single.html">文章标题1</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+                            
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="img/2.jpg" alt="">
+                                    <h3><a href="single.html">文章标题2</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="img/4.jpg" alt="">
+                                    <h3><a href="single.html">文章标题1</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="img/2.jpg" alt="">
+                                    <h3><a href="single.html">文章标题2</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="img/3.jpg" alt="">
+                                    <h3><a href="single.html">文章标题1</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="img/2.jpg" alt="">
+                                    <h3><a href="single.html">文章标题2</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="img/1.jpg" alt="">
+                                    <h3><a href="single.html">文章标题1</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
-                </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <fieldset class="layui-elem-field" style="padding: 1em;">
-                        <legend class="layui-timeline-title" style="font-size: 1em;">发表于n分钟前</legend>
-                        <div class="layui-field-box">
-                            <a href=""><h2 style="color: #01AAED;">文章1</h2></a><br>
-                            <a href=""><h5 style="color: #c2c2c2;">内容简介</h5></a>
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="img/3.jpg" alt="">
+                                    <h3><a href="single.html">文章标题2</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
                         </div>
-                    </fieldset>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="img/1.jpg" alt="">
+                                    <h3><a href="single.html">文章标题1</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="img/2.jpg" alt="">
+                                    <h3><a href="single.html">文章标题2</a></h3>
+                                    <span class="meta">n分钟前, 冰白</span>
+                                    <hr>
+                                </header>
+
+                            </article>
+                        </div>
+                    </div>
+
+
+                    <!--<div class="paging">-->
+                        <!--<a href="#" class="older">Older Post</i></a>-->
+                    <!--</div>-->
                 </div>
-            </li>
-            <li class="layui-timeline-item layui-anim layui-anim-up">
-                <i class="layui-icon layui-timeline-axis">&#xe63f</i>
-                <div class="layui-timeline-content layui-text">
-                    <h6 class="layui-timeline-title" style="color: #FFB800;">
-                        <fieldset class="layui-elem-field layui-field-title">
-                            <legend style="font-size: 1em;text-align: center">没有更多啦=w=</legend>
-                        </fieldset>
-                    </h6>
-                </div>
-            </li>
-        </ul>
+                <aside class="col-md-4 blog-aside">
+                    
+                    <div class="aside-widget">
+                        <header>
+                            <h3>本站特色</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                
+                    <div class="aside-widget">
+                        <header>
+                            <h3>相关推荐</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>标签</h3>
+                        </header>
+                        <div class="body clearfix">
+                            <ul class="tags">
+                                <li><a href="#">HTML5</a></li>
+                                <li><a href="#">CSS3</a></li>
+                                <li><a href="#">COMPONENTS</a></li>
+                                <li><a href="#">TEMPLATE</a></li>
+                                <li><a href="#">PLUGIN</a></li>
+                                <li><a href="#">BOOTSTRAP</a></li>
+                                <li><a href="#">TUTORIAL</a></li>
+                                <li><a href="#">UI/UX</a></li>                            
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
     </div>
-    <div class="layui-col-xs10 layui-col-xs-offset1 layui-col-sm4 layui-col-sm-offset8 layui-col-md4
-    layui-col-md-offset8 layui-col-lg-offset8 layui-col-lg4 layui-hide-xs" style="position: fixed;padding-right: 1em;margin-top: 7em">
-        <fieldset class="layui-elem-field layui-field-title">
-            <legend style="text-align: center">Icewhite</legend>
-        </fieldset>
-        <blockquote class="layui-elem-quote layui-quote-nm">
-            <h4>2019年03月10日</h4>
-        </blockquote>
-    </div>
-    <div class="layui-col-md12 layui-footer layui-col-xs12 layui-col-sm12 layui-col-lg12 layui-bg-black"
-         style="text-align: center;padding: 2.7em;padding-bottom: 2em;" id="footer">
-        <svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq"></use></svg>
-        <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat"></use></svg>
-        <svg class="icon" aria-hidden="true"><use xlink:href="#icon-gitee_white"></use></svg>
-        <svg class="icon" aria-hidden="true"><use xlink:href="#icon-git"></use></svg>
-        <h5>Powered by Icewhite Python Webapp.Copyright© 2019</h5>
-        <h6>All rights reserved.</h6>
-    </div>
+
+    <footer>
+        <div class="widewrapper footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 footer-widget">
+                        <h3> <i class="fa fa-user"></i>关于</h3>
+
+                       <p>对的事情无非是：</p>
+                       <p>分享适时的旋律。</p>
+                        <p>从一点星火中看到它的清澈，自己的灵魂再飘忽不定也能恍然安静。</p>
+                        <p>以及不卑而归属。</p>
+                    </div>
+
+                    <div class="col-md-4 footer-widget">
+                        <h3> <i class="fa fa-pencil"></i>最新发布</h3>
+                        <ul class="clean-list">
+                            <li><a href="">文章标题1</a></li>
+                            <li><a href="">文章标题2</a></li>
+                            <li><a href="">文章标题3</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 footer-widget">
+                        <h3> <i class="fa fa-envelope"></i>联系我</h3>
+
+                        <p>如果有任何建议</p>
+                        <p>欢迎随时轰炸作者</p>
+                         <div class="footer-widget-icon">
+                            <i class="fa fa-qq"></i><i class="fa fa-wechat"></i><i class="fa fa-github-alt"></i></i><i class="fa fa-git"></i>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+        <div class="widewrapper copyright">
+                Copyright &copy; 2019 . Ice White
+        </div>
+    </footer>
+    
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/modernizr.js"></script>
+
 </body>
-<script>
-    layui.use('element', function () {
-        var element = layui.element;
-    })
-</script>
 </html>
