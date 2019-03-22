@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>测试：添加用户模板</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+
+
+    <!-- Font-Awesome -->
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+
+    <!-- Google Webfonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../static/css/style.css" id="theme-styles">
+
+    <!--[if lt IE 9]>
+        <script src="../static/js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
+    <![endif]-->
+        <style>
+            .imga{
+                width: 10em;
+                height: 10em;
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+        </style>
+</head>
+<body>
+    <div class="widewrapper main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 clean-superblock" id="sub">
+                    <h2>添加用户测试</h2>
+                    <form id="vm" class="contact-form">
+                        <input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">
+                        <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
+                        <input type="password" v-model="password1" placeholder="输入登录密码" class="form-control input-lg">
+                        <input type="password" v-model="password2" placeholder="确认登录密码" class="form-control input-lg">
+                        <!--<input type="file" name="image" id="sub_image" multiple="multiple" onchange="pre(this)" placeholder="选择头像" class="form-control input-lg">-->
+                        <!--<div class="col-md-6 col-md-offset-3 clean-superblock" style="margin-top: 3em;">-->
+                            <!--<img src="" class="imga" id="imga">-->
+                        <!--</div>-->
+                        <div class="buttons clearfix">
+                            <button @click="submit" class="btn btn-xlarge btn-clean-one">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>-->
+    <script src="../static/js/vue.js"></script>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/axios.min.js"></script>
+    <!--<script src="../static/js/modernizr.js"></script>-->
+        <script type="text/javascript">
+        // function pre(event){
+        //     var img = document.getElementById("imga");
+        //     let file = event.files[0]
+        //     let reader = new FileReader();
+        //     reader.readAsDataURL(file);
+        //     reader.onload = function () {
+        //         console.log(this.result)
+        //         img.setAttribute("src", this.result)
+        //     }
+        // }
+        function validateEmail(email){
+            var re = /^[a-z0-9\.\-\_]+@[a-z0-9\-\_]+(\.[a-z0-9\.-\_]+){1,4}$/
+            return re.test(email.toLowerCase())
+        }
+        var vm = new Vue({
+            el: '#vm',
+            data: {
+                name: '',
+                email: '',
+                password1: '',
+                password2: ''
+            },
+            methods: {
+                submit: function (event) {
+                    event.preventDefault();
+                    var $form = $('#vm');
+                    if(!this.name.trim()){
+                        return $form.showFormError('请输入名字');
+                    }
+                    if(!validateEmail(this.email.trim().toLowerCase())){
+                        return $form.showFormError('请输入正确的Email地址');
+                    }
+                    if(this.password1 !== this.password2){
+                        return $form.showFormError('两次输入的口令不一致')
+                    }
+                    if(this.password1.length < 6){
+                        return $form.showFormError('口令长度至少为6个字符');
+                    }
+                    var email = this.email.trim().toLowerCase();
+                    axios.post('/users', {
+                        name: this.name.trim(),
+                        email: email,
+                        passwd: this.password1.toString()
+                    })
+                    // , function (err, r) {
+                    //     console.log(this.name+this.email+this.password1)
+                    //     if(err){
+                    //         return $form.showFormError(err);
+                    //     }
+                    //     return location.assign('/')
+                    // })
+                }
+            }
+        });
+    </script>
+</body>
+</html>

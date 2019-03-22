@@ -42,4 +42,14 @@ class Comment(Model):
     user_image = StringField(ddl='varchar(500)')
     content = TextField()
     created_at = FloatField(default=time.time)
+    show = BooleanField()
 
+
+class Contact(Model):
+    __table__ = 'contacts'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    email = StringField(ddl='varchar(50)')
+    name = StringField(ddl='varchar(50)')
+    content = TextField()
+    created_at = FloatField(default=time.time)
