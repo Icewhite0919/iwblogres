@@ -125,7 +125,7 @@ class RequestHandler(object):
                 for name in self._named_kw_args:
                     if name in kw:
                         copy[name] = kw[name]
-                    kw = copy
+                kw = copy
             for k, v in request.match_info.items():
                 if k in kw:
                     logging.warning('Duplicate arg name in named arg and kw args: %s' % k)
@@ -138,7 +138,6 @@ class RequestHandler(object):
                     return web.HTTPBadRequest(text='Missing argument: %s' % name)
         logging.info('call with args: %s' % str(kw))
         try:
-            print(kw)
             r = await self._func(**kw)
             return r
         except APIError as e:
