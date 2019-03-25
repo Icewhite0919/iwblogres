@@ -171,18 +171,26 @@ class Model(dict, metaclass=ModelMetaclass):
     async def findAll(cls, where=None, args=None, **kw):
         'find objects by where clause.'
         sql = [cls.__select__]
-        if where:
-            sql.append(' where')
+        print(where)
+        print(isinstance(where, list))
+        if where and not isinstance(where, list):
+            sql.append('where')
             sql.append(where)
+            sql.append('=?')
+        elif where and isinstance(where, list):
+            sql.append('where')
+            for i in where:
+                sql.append('`' + i + '`' + '=? and')
+            sql[-1] = sql[-1].replace(' and','')
         if args is None:
             args = []
         orderBy = kw.get('orderBy', None)
         if orderBy:
-            sql.append(' order by')
+            sql.append('order by')
             sql.append(orderBy)
         limit = kw.get('limit', None)
         if limit is not None:
-            sql.append(' limit')
+            sql.append('limit')
             if isinstance(limit, int):
                 sql.append('?')
                 args.append(limit)

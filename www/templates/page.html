@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>文章标题</title>
+    <title>{{ blog.name }}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
@@ -23,8 +23,9 @@
     <![endif]-->
     <style>
         div figure img{
-            width: 70%;
-            height: 70%;
+            display: block;
+            height: auto;
+            max-width: 100%;
         }
     </style>
 
@@ -108,65 +109,22 @@
                         <hr>
 
                         <h2><i class="fa fa-comments"></i> 评论区</h2>
-
+                        {% for comment in comments %}
                         <article class="comment">
                             <header class="clearfix">
-                                <img src="/userimg/{{ blog.user_image}}" alt="A Smart Guy" class="avatar">
+                                <img src="/userimg/{{ comment.user_image}}" alt="图片炸裂" class="avatar">
                                 <div class="meta">
-                                    <h3><a href="#">冰白</a></h3>
+                                    <h3>{{ comment.user_name }}</a></h3>
                                     <span class="date">
-                                        2018年03月17日
+                                        {{ comment.created_at }}
                                     </span>
                                 </div>
                             </header>
                              <div class="body">
-                                 瞎说！
+                                 {{ comment.content }}
                              </div>
                         </article>
-
-                        <article class="comment reply">
-                            <header class="clearfix">
-                                <img src="../static/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">冰白</a></h3>
-                                    <span class="date">
-                                        2018年03月17日
-                                    </span>
-                                    <span class="separator">
-                                        -
-                                    </span>
-
-                                    <a href="#create-comment" class="reply-link">回复</a>
-                                </div>
-                            </header>
-                             <div class="body">才没有！</div>
-                        </article>
-
-                        <article class="comment ">
-                            <header class="clearfix">
-                                <img src="../static/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">冰白</a></h3>
-                                    <span class="date">
-                                        2018年03月17日
-                                    </span>
-                                </div>
-                            </header>
-                             <div class="body">假的网络</div>
-                        </article>
-
-                        <article class="comment">
-                            <header class="clearfix">
-                                <img src="../static/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">冰白</a></h3>
-                                    <span class="date">
-                                        2018年03月18日
-                                    </span>
-                                </div>
-                            </header>
-                             <div class="body">明天的评论</div>
-                        </article>
+                        {% endfor %}
                     </aside>
 
                     <aside class="create-comment" id="create-comment">
@@ -174,24 +132,24 @@
 
                         <h2><i class="fa fa-pencil"></i> 写下你的评论~在审核后显示</h2>
 
-                        <form action="#" method="get" accept-charset="utf-8">
+                        <div id="comment" accept-charset="utf-8">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="text" name="name" id="comment-name" placeholder="昵称" class="form-control input-lg">
+                                    <input type="text" v-model="name" id="comment-name" placeholder="昵称" class="form-control input-lg">
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="email" name="email" id="comment-email" placeholder="电子邮箱" class="form-control input-lg">
+                                    <input type="email" v-model="email" id="comment-email" placeholder="电子邮箱" class="form-control input-lg">
                                 </div>
                             </div>
 
-                            <input type="url" name="name" id="comment-url" placeholder="或者...你的个人网站" class="form-control input-lg">
+                            <input type="url" v-model="website" id="comment-url" placeholder="或者...你的个人网站" class="form-control input-lg">
 
-                            <textarea rows="10" name="message" id="comment-body" placeholder="评论" class="form-control input-lg"></textarea>
+                            <textarea rows="10" v-model="content" id="comment-body" placeholder="评论" class="form-control input-lg"></textarea>
 
                             <div class="buttons clearfix">
-                                <button type="submit" class="btn btn-xlarge btn-clean-one">点击Subbbbbbmit！</button>
+                                <button @click="submit" class="btn btn-xlarge btn-clean-one">点击Subbbbbbmit！</button>
                             </div>
-                        </form>
+                        </div>
                     </aside>
                 </div>
                 <aside class="col-md-4 blog-aside">
@@ -276,9 +234,37 @@
     </div>
 </footer>
 
+    <script src="../static/js/vue.js"></script>
     <script src="../static/js/jquery.min.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
     <script src="../static/js/modernizr.js"></script>
+    <script src="../static/js/axios.min.js"></script>
+
+    <script type="text/javascript">
+        var comment = new Vue({
+            el: '#comment',
+            data: {
+                blogid:'{{ blog.id }}',
+                name:'',
+                email:'',
+                website:'',
+                content:''
+            },
+            methods: {
+                submit: function(event){
+                    event.preventDefault()
+                    var $form = $('#comment')
+                    axios.post('/comments', {
+                        blogid: this.blogid,
+                        name: this.name.trim(),
+                        email: this.email.trim(),
+                        website: this.website.trim(),
+                        content: this.content.trim()
+                    })
+                }
+            }
+        })
+    </script>
 
 </body>
 </html>

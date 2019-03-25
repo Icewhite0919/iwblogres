@@ -73,7 +73,7 @@ async def api_register_user(*, email, name, passwd):
 async def api_add_blog(*, name, intro, body, img):
     uid = next_id()
     print(name, intro, body)
-    with open('./static/blogintro/' + uid + '.png', 'wb') as store:
+    with open('./static/images/blogintro/' + uid + '.png', 'wb') as store:
         store.write(base64.b64decode(img[22:].encode()))
     # body = base64.b64decode(body).decode() #取
     blog = Blog(id=uid, user_id='null', user_image='138649796585137407.jpg',user_name='冰白', name=name, summary=intro, content=body, img=uid+'.png')
@@ -83,29 +83,38 @@ async def api_add_blog(*, name, intro, body, img):
 @post('/imgurl')
 async def saveimg(**kw):
     imgid = next_imgid()
-    with open('./static/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''), 'wb') as store:
+    with open('./static/images/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''), 'wb') as store:
         store.write(kw['upload'].file.read())
     return dict(uploaded=1, url='/img/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''))
 
 
 @get('/img/{filename}')
 async def staticGetter(filename):
-    with open('./static/blogimg/' + filename, 'rb') as f:
+    with open('./static/images/blogimg/' + filename, 'rb') as f:
         return f.read()
 
 
 @get('/userimg/{filename}')
 async def user_img_getter(filename):
-    with open('./static/userimg/' + filename, 'rb') as f:
+    with open('./static/images/userimg/' + filename, 'rb') as f:
         return f.read()
 
 
 @get('/test')
 async def test(request):
     blogs = await Blog.findAll()
-    print(blogs)
+    blog = blogs[0]
+    comments = await Comment.findAll(where=['blog_id', 'show'], args=[blog.id, True])
+    # blogs[0].created_at = datetime_filter(blogs[0].created_at)
     return{
         '__template__': 'page.html',
-        'blog':blogs[0]
+        'blog': blog,
+        'comments': comments
     }
+
+
+@post('/comments')
+async def api_submit_comments(*, blogid, name, email, website, content):
+    comment = Comment(blog_id=blogid, user_id='null', user_name=name, user_image='138649796585137407.jpg', content=content)
+    await comment.save()
 

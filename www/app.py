@@ -70,6 +70,10 @@ async def response_factory(app, handler):
         if isinstance(r, dict):
             logging.info('dict is found...')
             template = r.get('__template__')
+            if r.get('blog') or r.get('comments'):
+                r.get('blog').created_at = datetime_filter(r.get('blog').created_at)
+                for comment in r.get('comments'):
+                    comment.created_at = datetime_filter(comment.created_at)
             if template is None:
                 resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o:o.__dict__).encode('utf-8'))
                 resp.content_type = 'application/json;charset=utf-8'
