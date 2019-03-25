@@ -72,31 +72,40 @@ async def api_register_user(*, email, name, passwd):
 @post('/blogs')
 async def api_add_blog(*, name, intro, body, img):
     uid = next_id()
-    body = base64.b64encode(body.encode()).decode() #存
-    with open('./static/images/blogimg/' + uid + '.png', 'wb') as store:
+    print(name, intro, body)
+    with open('./static/blogintro/' + uid + '.png', 'wb') as store:
         store.write(base64.b64decode(img[22:].encode()))
     # body = base64.b64decode(body).decode() #取
-    # blog = Blog(id=uid, user_id='null', user_image='null',user_name='冰白', name=name, summary=intro, content=body)
-    # await blog.save()
+    blog = Blog(id=uid, user_id='null', user_image='138649796585137407.jpg',user_name='冰白', name=name, summary=intro, content=body, img=uid+'.png')
+    await blog.save()
 
 
 @post('/imgurl')
 async def saveimg(**kw):
     imgid = next_imgid()
-    with open('./static/images/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''), 'wb') as store:
+    with open('./static/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''), 'wb') as store:
         store.write(kw['upload'].file.read())
     return dict(uploaded=1, url='/img/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''))
 
 
 @get('/img/{filename}')
 async def staticGetter(filename):
-    with open('./static/images/blogimg/' + filename, 'rb') as f:
+    with open('./static/blogimg/' + filename, 'rb') as f:
+        return f.read()
+
+
+@get('/userimg/{filename}')
+async def user_img_getter(filename):
+    with open('./static/userimg/' + filename, 'rb') as f:
         return f.read()
 
 
 @get('/test')
 async def test(request):
+    blogs = await Blog.findAll()
+    print(blogs)
     return{
-        '__template__': 'blog_add.html'
+        '__template__': 'page.html',
+        'blog':blogs[0]
     }
 
