@@ -1,0 +1,80 @@
+{% extends '__base__.html' %}
+{% block title %}冰白的小站{% endblock %}
+{% block content %}
+    <div class="widewrapper main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 blog-main">
+                    {% for row in rows %}
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="/img/{{ row.img1 }}" alt="">
+                                    <h3><a href="/article/{{ row.id1 }}">{{ row.name1 }}</a></h3>
+                                    <span class="meta">{{ row.created_at1 }}, {{ row.user_name1 }}</span>
+                                    <hr>
+                                </header>
+                            </article>
+                        </div>
+                        {% if row.twoarticle %}
+                        <div class="col-md-6 col-sm-6">
+                            <article class="blog-teaser">
+                                <header>
+                                    <img src="/img/{{ row.img2 }}" alt="">
+                                    <h3><a href="/article/{{ row.id2 }}">{{ row.name2 }}</a></h3>
+                                    <span class="meta">{{ row.created_at2 }}, {{ row.user_name2 }}</span>
+                                    <hr>
+                                </header>
+                            </article>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <aside class="col-md-4 blog-aside">
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>本站特色</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>相关推荐</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>标签</h3>
+                        </header>
+                        <div class="body clearfix">
+                            <ul class="tags">
+                                <li><a href="#">HTML5</a></li>
+                                <li><a href="#">CSS3</a></li>
+                                <li><a href="#">COMPONENTS</a></li>
+                                <li><a href="#">TEMPLATE</a></li>
+                                <li><a href="#">PLUGIN</a></li>
+                                <li><a href="#">BOOTSTRAP</a></li>
+                                <li><a href="#">TUTORIAL</a></li>
+                                <li><a href="#">UI/UX</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+{% endblock %}

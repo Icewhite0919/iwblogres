@@ -1,0 +1,105 @@
+{% extends '__base__.html' %}
+{% block title %}{{ article.name }}{% endblock %}
+{% block content %}
+    <div class="widewrapper main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 blog-main">
+                    <article class="blog-post">
+                        <div class="body">
+                            <h1>{{ article.name }}</h1>
+                            <div class="meta">
+                                <i class="fa fa-user"></i> {{ article.user_name }} <i class="fa fa-calendar"></i>{{ article.created_at }}<i class="fa fa-comments"></i><span class="data"><a href="#comments">6</a></span>
+                            </div>
+                            {{ article.content|safe }}
+                        </div>
+                    </article>
+                    <aside class="comments" id="comments">
+                        <hr>
+
+                        <h2><i class="fa fa-comments"></i> 评论区</h2>
+                        {% for comment in article.comments %}
+                        <article class="comment">
+                            <header class="clearfix">
+                                <img src="/img/{{ comment.user_image}}" alt="图片炸裂" class="avatar">
+                                <div class="meta">
+                                    <h3>{{ comment.user_name }}</a></h3>
+                                    <span class="date">
+                                        {{ comment.created_at }}
+                                    </span>
+                                </div>
+                            </header>
+                             <div class="body">
+                                 {{ comment.content }}
+                             </div>
+                        </article>
+                        {% endfor %}
+                    </aside>
+
+                    <aside class="create-comment" id="create-comment">
+                        <hr>
+
+                        <h2><i class="fa fa-pencil"></i> 写下你的评论~在审核后显示</h2>
+
+                        <div id="comment" accept-charset="utf-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" v-model="name" id="comment-name" placeholder="昵称" class="form-control input-lg">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" v-model="email" id="comment-email" placeholder="电子邮箱" class="form-control input-lg">
+                                </div>
+                            </div>
+
+                            <input type="url" v-model="website" id="comment-url" placeholder="或者...你的个人网站" class="form-control input-lg">
+
+                            <textarea rows="10" v-model="content" id="comment-body" placeholder="评论" class="form-control input-lg"></textarea>
+
+                            <div class="buttons clearfix">
+                                <button @click="submit" class="btn btn-xlarge btn-clean-one">点击Subbbbbbmit！</button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                <aside class="col-md-4 blog-aside">
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>本站特色</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>相关推荐</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <li><a href="">当前板块未开通...</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>标签</h3>
+                        </header>
+                        <div class="body clearfix">
+                            <ul class="tags">
+                                <li><a href="#">HTML5</a></li>
+                                <li><a href="#">CSS3</a></li>
+                                <li><a href="#">Bootstrap</a></li>
+                                <li><a href="#">UI/UX</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+{% endblock %}

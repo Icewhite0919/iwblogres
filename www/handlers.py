@@ -43,10 +43,32 @@ def validate_password(hashed, input_password):
 
 @get('/')
 async def index(request):
-    users = await User.findAll()
+    blogs = await Blog.findAll()
+    twoarticle = 0
+    rows = []
+    row = {}
+    for blog in blogs:
+        if twoarticle == 0:
+            row['name1'] = blog.name
+            row['id1'] = blog.id
+            row['img1'] = blog.img
+            row['user_name1'] = blog.user_name
+            row['created_at1'] = blog.created_at
+            twoarticle = 1
+        else:
+            row['name2'] = blog.name
+            row['id2'] = blog.id
+            row['img2'] = blog.img
+            row['user_name2'] = blog.user_name
+            row['created_at2'] = blog.created_at
+            row['twoarticle'] = True
+            twoarticle = 0
+            rows.append(row)
+    if twoarticle == 1:
+        rows.append(row)
     return {
-        '__template__': 'index.html',
-        'users': users
+        '__template__': '__index__.html',
+        'rows': rows
     }
 
 

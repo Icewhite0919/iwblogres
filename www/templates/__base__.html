@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../static/css/style.css" id="theme-styles">
+    <!--[if lt IE 9]>
+        <script src="../static/js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
+    <![endif]-->
+    <title>{% block title %} 冰白 {% endblock %}</title>
+</head>
+<body>
+<header>
+    <div class="widewrapper masthead">
+        <div class="container">
+            <a href="index.html" id="logo">
+                <img src="../static/img/logo.png" alt="clean Blog">
+            </a>
+
+            <div id="mobile-nav-toggle" class="pull-right">
+                <a href="#" data-toggle="collapse" data-target=".clean-nav .navbar-collapse">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+
+            <nav class="pull-right clean-nav">
+                <div class="collapse navbar-collapse">
+                    <ul class="nav nav-pills navbar-nav">
+                        <li>
+                            <a href="/" style="border: 0px">主页</a>
+                        </li>
+                        <li>
+                            <a href="/about" style="border: 0px">关于</a>
+                        </li>
+                        <li>
+                            <a href="/contact" style="border: 0px">联系我</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="widewrapper subheader">
+        <div class="container">
+            <div class="clean-breadcrumb" style="margin-top: 0.6em;margin-bottom: 0.4em;margin-left: 0.8em">
+                <a href=""><div class="headImg"></div></a>
+            </div>
+            {% block userinfo %}
+            <style>
+                .headImg{
+                    border-radius: 30px;
+                    width: 60px;
+                    height: 60px;
+                    background: url("../static/images/userimg/138649796585137407.jpg") no-repeat center;
+                    background-size: 60px;
+                }
+                #info a:hover{
+                    color:red;
+                }
+            </style>
+            <div id="info" class="clean-breadcrumb" style="padding-top: 0.5em;">
+                <a href="">&nbsp;&nbsp;欢迎回来，冰白</a>
+            </div>
+            {% endblock %}
+            <div class="clean-searchbox">
+                <form action="#" method="get" accept-charset="utf-8">
+                    <input class="searchfield" id="searchbox" type="text" placeholder="输入关键字...">
+                    <button class="searchbutton" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+{% block content %}
+{% endblock %}
+<footer>
+    <div class="widewrapper footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 footer-widget">
+                    <h3> <i class="fa fa-user"></i>关于</h3>
+
+                    <p>对的事情无非是：</p>
+                    <p>分享适时的旋律。</p>
+                    <p>从一点星火中看到它的清澈，自己的灵魂再飘忽不定也能恍然安静。</p>
+                    <p>以及不卑而归属。</p>
+                </div>
+
+                <div class="col-md-4 footer-widget">
+                    <h3> <i class="fa fa-pencil"></i>最新发布</h3>
+                    <ul class="clean-list">
+                        {% for new in news %}
+                        <li><a href="/article/{{ new.id }}">{{ new.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4 footer-widget">
+                    <h3> <i class="fa fa-envelope"></i>联系我</h3>
+
+                    <p>如果有任何建议</p>
+                    <p>欢迎随时轰炸作者</p>
+                    <div class="footer-widget-icon">
+                        <i class="fa fa-qq"></i><i class="fa fa-wechat"></i><i class="fa fa-github-alt"></i></i><i class="fa fa-git"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="widewrapper copyright">
+        Copyright &copy; 2019 . Ice White
+    </div>
+</footer>
+<script src="../static/js/vue.js"></script>
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/modernizr.js"></script>
+<script src="../static/js/axios.min.js"></script>
+</body>
+</html>
