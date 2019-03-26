@@ -7,28 +7,18 @@
                 <div class="col-md-8 blog-main">
                     {% for row in rows %}
                     <div class="row">
+                        {% for article in row %}
                         <div class="col-md-6 col-sm-6">
                             <article class=" blog-teaser">
                                 <header>
-                                    <img src="/img/{{ row.img1 }}" alt="">
-                                    <h3><a href="/article/{{ row.id1 }}">{{ row.name1 }}</a></h3>
-                                    <span class="meta">{{ row.created_at1 }}, {{ row.user_name1 }}</span>
+                                    <img src="/img{{ article.img }}" alt="">
+                                    <h3><a href="/article/{{ article.id }}">{{ article.name }}</a></h3>
+                                    <span class="meta">{{ article.created_at }}, {{ article.user_name }}</span>
                                     <hr>
                                 </header>
                             </article>
                         </div>
-                        {% if row.twoarticle %}
-                        <div class="col-md-6 col-sm-6">
-                            <article class="blog-teaser">
-                                <header>
-                                    <img src="/img/{{ row.img2 }}" alt="">
-                                    <h3><a href="/article/{{ row.id2 }}">{{ row.name2 }}</a></h3>
-                                    <span class="meta">{{ row.created_at2 }}, {{ row.user_name2 }}</span>
-                                    <hr>
-                                </header>
-                            </article>
-                        </div>
-                        {% endif %}
+                        {% endfor %}
                     </div>
                     {% endfor %}
                 </div>

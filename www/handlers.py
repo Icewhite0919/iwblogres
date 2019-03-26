@@ -43,29 +43,13 @@ def validate_password(hashed, input_password):
 
 @get('/')
 async def index(request):
-    blogs = await Blog.findAll()
-    twoarticle = 0
+    blogs = iter(await Blog.findAll())
     rows = []
-    row = {}
-    for blog in blogs:
-        if twoarticle == 0:
-            row['name1'] = blog.name
-            row['id1'] = blog.id
-            row['img1'] = blog.img
-            row['user_name1'] = blog.user_name
-            row['created_at1'] = blog.created_at
-            twoarticle = 1
-        else:
-            row['name2'] = blog.name
-            row['id2'] = blog.id
-            row['img2'] = blog.img
-            row['user_name2'] = blog.user_name
-            row['created_at2'] = blog.created_at
-            row['twoarticle'] = True
-            twoarticle = 0
-            rows.append(row)
-    if twoarticle == 1:
-        rows.append(row)
+    while True:
+        try:
+            rows.append([next(blogs), next(blogs)])
+        except StopIteration:
+            break
     return {
         '__template__': '__index__.html',
         'rows': rows
@@ -110,9 +94,9 @@ async def saveimg(**kw):
     return dict(uploaded=1, url='/img/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''))
 
 
-@get('/img/{filename}')
-async def staticGetter(filename):
-    with open('./static/images/blogimg/' + filename, 'rb') as f:
+@get('/img/{dictionary}/{filename}')
+async def staticGetter(*, dictionary, filename):
+    with open('./static/images/'+ dictionary + '/' + filename, 'rb') as f:
         return f.read()
 
 
