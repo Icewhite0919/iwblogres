@@ -45,14 +45,52 @@ def validate_password(hashed, input_password):
 async def index(request):
     blogs = iter(await Blog.findAll())
     rows = []
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
     while True:
         try:
-            rows.append([next(blogs), next(blogs)])
+            rows.append([])
+            rows[-1].append(next(blogs))
+            rows[-1].append(next(blogs))
         except StopIteration:
+            if len(rows[-1]) == 0:
+                rows.pop(-1)
             break
     return {
         '__template__': '__index__.html',
-        'rows': rows
+        'rows': rows,
+        'news': news
+    }
+
+
+@get('/article/{id}')
+async def api_article_getter(*, id):
+    blog = await Blog.find(id)
+    comments = await Comment.findAll(['blog_id','show'], [id, True])
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
+    return {
+        '__template__': '__article__.html',
+        'article': blog,
+        'comments': comments,
+        'comments_nums': len(comments),
+        'news': news
+    }
+
+
+@get('/about')
+async def api_about_getter(request):
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
+    return {
+        '__template__': '__about__.html',
+        'news': news
+    }
+
+
+@get('/contact')
+async def api_contact_getter(request):
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
+    return {
+        '__template__': '__contact__.html',
+        'news': news
     }
 
 

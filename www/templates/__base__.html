@@ -65,7 +65,52 @@
                 }
             </style>
             <div id="info" class="clean-breadcrumb" style="padding-top: 0.5em;">
-                <a href="">&nbsp;&nbsp;欢迎回来，冰白</a>
+                <!--<a href="">&nbsp;&nbsp;欢迎回来，冰白</a>-->
+                <a href="#login" data-toggle="modal" data-target="#login">&nbsp;&nbsp;登录</a>&nbsp;&nbsp;/
+                <a href="#register" data-toggle="modal" data-target="#register">&nbsp;&nbsp;注册</a>
+            </div>
+            <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <div class="col-md-8 col-md-offset-2 clean-superblock" id="sub">
+                            <h2>注册</h2>
+                            <form id="vmregister" class="contact-form">
+                                <input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">
+                                <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
+                                <input type="password" v-model="password1" placeholder="输入登录密码" class="form-control input-lg">
+                                <input type="password" v-model="password2" placeholder="确认登录密码" class="form-control input-lg">
+                                <div class="buttons clearfix">
+                                    <button @click="submit" class="btn btn-xlarge btn-clean-one">提交</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <div class="col-md-8 col-md-offset-2 clean-superblock" id="log">
+                            <h2>登录</h2>
+                            <form id="vmlogin" class="contact-form">
+                                <input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">
+                                <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
+                                <input type="password" v-model="password1" placeholder="输入登录密码" class="form-control input-lg">
+                                <div class="buttons clearfix">
+                                    <button @click="submit" class="btn btn-xlarge btn-clean-one">登录</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
             {% endblock %}
             <div class="clean-searchbox">

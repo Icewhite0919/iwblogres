@@ -13,7 +13,7 @@
                                 <header>
                                     <img src="/img{{ article.img }}" alt="">
                                     <h3><a href="/article/{{ article.id }}">{{ article.name }}</a></h3>
-                                    <span class="meta">{{ article.created_at }}, {{ article.user_name }}</span>
+                                    <span class="meta">{{ article.created_at|datetime }}, {{ article.user_name }}</span>
                                     <hr>
                                 </header>
                             </article>

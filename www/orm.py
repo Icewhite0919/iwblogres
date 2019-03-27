@@ -171,8 +171,6 @@ class Model(dict, metaclass=ModelMetaclass):
     async def findAll(cls, where=None, args=None, **kw):
         'find objects by where clause.'
         sql = [cls.__select__]
-        print(where)
-        print(isinstance(where, list))
         if where and not isinstance(where, list):
             sql.append('where')
             sql.append(where)
