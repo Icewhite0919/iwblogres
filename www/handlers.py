@@ -142,11 +142,7 @@ async def api_user_authenticate(*,email, passwd):
     if len(users) == 0:
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
-    sha1 = hashlib.sha1()
-    sha1.update(user.id.encode('utf-8'))
-    sha1.update(b':')
-    sha1.update(passwd.encode('utf-8'))
-    if user.passwd != sha1.hexdigest():
+    if not validate_password(base64.b64decode(user.passwd.encode()), passwd):
         raise APIValueError('passwd', 'Invalid password.')
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)

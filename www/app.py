@@ -2,6 +2,10 @@ from jinja2 import Environment, FileSystemLoader
 
 from www import orm
 from www.coroweb import add_routes, add_static
+
+from www.handlers import cookie2user, COOKIE_NAME, user2cookie
+
+from www.models import User
 import logging;logging.basicConfig(level=logging.INFO)
 
 import asyncio, os, json, time
@@ -39,6 +43,20 @@ async def logger_factory(app, handler):
     return logger
 
 
+async def auth_factory(app, handler):
+    async def auth(request):
+        logging.info('check user: %s %s' % (request.method, request.path))
+        request.__user__ = None
+        cookie_str = request.cookies.get(COOKIE_NAME)
+        if cookie_str:
+            user = await cookie2user(cookie_str)
+            if user:
+                logging.info('set current user: %s' % user.email)
+                request.__user__ = user
+        return (await handler(request))
+    return auth
+
+
 async def data_factory(app, handler):
     async def parse_data(request):
         if request.method == 'POST':
@@ -71,14 +89,18 @@ async def response_factory(app, handler):
             logging.info('dict is found...')
             template = r.get('__template__')
             if template is None:
-                resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o:o.__dict__).encode('utf-8'))
+                resp = web.Response(body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:
+                r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
+                if request.__user__:
+                    user = await User.find(request.__user__.id)
+                    r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
                 return resp
-        if isinstance(r, int) and r >= 100 and r<600:
+        if isinstance(r, int) and r >= 100 and r < 600:
             return web.Response(r)
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
@@ -115,7 +137,7 @@ async def init(loop):
         database='iwblog'
     )
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, response_factory
+        logger_factory, response_factory, auth_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
