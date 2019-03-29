@@ -65,9 +65,13 @@
                 }
             </style>
             <div id="info" class="clean-breadcrumb" style="padding-top: 0.5em;">
-                <!--<a href="">&nbsp;&nbsp;欢迎回来，冰白</a>-->
+                {% if __user__ %}
+                <a href="">&nbsp;&nbsp;欢迎回来，{{ __user__.name }}</a>&nbsp;&nbsp;/
+                <a href="">&nbsp;&nbsp;退出登录</a>
+                {% else %}
                 <a href="#login" data-toggle="modal" data-target="#login">&nbsp;&nbsp;登录</a>&nbsp;&nbsp;/
                 <a href="#register" data-toggle="modal" data-target="#register">&nbsp;&nbsp;注册</a>
+                {% endif %}
             </div>
             <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -101,11 +105,11 @@
                         <div class="col-md-8 col-md-offset-2 clean-superblock" id="log">
                             <h2>登录</h2>
                             <form id="vmlogin" class="contact-form">
-                                <input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">
+                                <!--<input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">-->
                                 <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
-                                <input type="password" v-model="password1" placeholder="输入登录密码" class="form-control input-lg">
+                                <input type="password" v-model="passwd" placeholder="输入登录密码" class="form-control input-lg">
                                 <div class="buttons clearfix">
-                                    <button @click="submit" class="btn btn-xlarge btn-clean-one">登录</button>
+                                    <button @click="submitlogin" class="btn btn-xlarge btn-clean-one">登录</button>
                                 </div>
                             </form>
                         </div>
@@ -170,5 +174,22 @@
 <script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/js/modernizr.js"></script>
 <script src="../static/js/axios.min.js"></script>
+<script>
+    var vmlogin = new Vue({
+        el:'#vmlogin',
+        data:{
+            email: '',
+            passwd: ''
+        },
+        methods: {
+            submitlogin: function () {
+                axios.post('/authenticate',{
+                    email: this.email.trim(),
+                    passwd: this.passwd.trim()
+                })
+            }
+        }
+    })
+</script>
 </body>
 </html>

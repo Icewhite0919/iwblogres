@@ -144,12 +144,10 @@ async def api_user_authenticate(*,email, passwd):
     user = users[0]
     if not validate_password(base64.b64decode(user.passwd.encode()), passwd):
         raise APIValueError('passwd', 'Invalid password.')
-    r = web.Response()
-    r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
-    user.passwd = '******'
-    r.content_type = 'application/json'
-    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
-    return r
+    return {
+        '__template__': '__index__.html',
+        '__auth__': user
+    }
 
 
 @get('/signout')

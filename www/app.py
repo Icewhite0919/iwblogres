@@ -93,12 +93,16 @@ async def response_factory(app, handler):
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:
-                r['__user__'] = request.__user__
+                if r.get('__auth__'):
+                    r['__user__'] = r['__auth__']
+                else:
+                    r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
+                # print(request.__user__)
                 if request.__user__:
                     user = await User.find(request.__user__.id)
-                    r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
+                    resp.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
                 return resp
         if isinstance(r, int) and r >= 100 and r < 600:
             return web.Response(r)
@@ -137,7 +141,7 @@ async def init(loop):
         database='iwblog'
     )
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, response_factory, auth_factory
+        logger_factory, data_factory, response_factory, auth_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
