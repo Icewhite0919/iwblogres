@@ -133,7 +133,8 @@ async def api_contact_getter(request):
 
 
 @post('/authenticate')
-async def api_user_authenticate(*,email, passwd):
+async def api_user_authenticate(request, *, email, passwd):
+    print(email, passwd)
     if not email:
         raise APIValueError('email', 'Invalid email.')
     if not passwd:
@@ -144,15 +145,15 @@ async def api_user_authenticate(*,email, passwd):
     user = users[0]
     if not validate_password(base64.b64decode(user.passwd.encode()), passwd):
         raise APIValueError('passwd', 'Invalid password.')
-    return {
-        '__template__': '__index__.html',
-        '__auth__': user
-    }
-
+    referer = request.headers.get('Referer')
+    r = web.HTTPFound(referer or '/')
+    r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
+    return r
 
 @get('/signout')
 def api_user_signout(request):
     referer = request.headers.get('Referer')
+    print(referer)
     r = web.HTTPFound(referer or '/')
     r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
     logging.info('user signed out.')

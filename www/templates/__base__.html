@@ -51,7 +51,6 @@
             <div class="clean-breadcrumb" style="margin-top: 0.6em;margin-bottom: 0.4em;margin-left: 0.8em">
                 <a href=""><div class="headImg"></div></a>
             </div>
-            {% block userinfo %}
             <style>
                 .headImg{
                     border-radius: 30px;
@@ -67,10 +66,10 @@
             <div id="info" class="clean-breadcrumb" style="padding-top: 0.5em;">
                 {% if __user__ %}
                 <a href="">&nbsp;&nbsp;欢迎回来，{{ __user__.name }}</a>&nbsp;&nbsp;/
-                <a href="">&nbsp;&nbsp;退出登录</a>
+                <a href="" id="sign" @click="signout">&nbsp;&nbsp;退出登录</a>
                 {% else %}
-                <a href="#login" data-toggle="modal" data-target="#login">&nbsp;&nbsp;登录</a>&nbsp;&nbsp;/
-                <a href="#register" data-toggle="modal" data-target="#register">&nbsp;&nbsp;注册</a>
+                <a href="" data-toggle="modal" data-target="#login">&nbsp;&nbsp;登录</a>&nbsp;&nbsp;/
+                <a href="" data-toggle="modal" data-target="#register">&nbsp;&nbsp;注册</a>
                 {% endif %}
             </div>
             <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -113,10 +112,11 @@
                                 </div>
                             </form>
                         </div>
+                        <div class="modal-footer">
+                        </div>
                     </div>
                 </div>
             </div>
-            {% endblock %}
             <div class="clean-searchbox">
                 <form action="#" method="get" accept-charset="utf-8">
                     <input class="searchfield" id="searchbox" type="text" placeholder="输入关键字...">
@@ -187,6 +187,16 @@
                     email: this.email.trim(),
                     passwd: this.passwd.trim()
                 })
+                    .then(Response.redirect(window.location.href))
+            }
+        }
+    })
+    var sign = new Vue({
+        el:'#sign',
+        methods: {
+            signout: function () {
+                axios.get('/signout')
+                    .then(Response.redirect(window.location.href))
             }
         }
     })
