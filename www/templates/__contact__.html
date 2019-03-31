@@ -7,10 +7,12 @@
                 <div class="col-md-6 col-md-offset-3 clean-superblock" id="contact">
                     <h2>联系我</h2>
 
-                    <form action="#" method="get" accept-charset="utf-8" class="contact-form">
-                        <input type="text" name="name" id="contact-name" placeholder="昵称/姓名" class="form-control input-lg">
-                        <input type="email" name="email" id="contact-email" placeholder="电子邮箱" class="form-control input-lg">
-                        <textarea rows="10" name="message" id="contact-body" placeholder="你的建议..." class="form-control input-lg"></textarea>
+                    <form id="con" accept-charset="utf-8" class="contact-form">
+                        {% if not __user__ %}
+                        <input type="text" v-model="name" id="contact-name" placeholder="昵称/姓名" class="form-control input-lg">
+                        <input type="email" v-model="email" id="contact-email" placeholder="电子邮箱" class="form-control input-lg">
+                        {% endif %}
+                        <textarea rows="10" v-model="content" id="contact-body" placeholder="你的建议..." class="form-control input-lg"></textarea>
                         <div class="buttons clearfix">
                             <button type="submit" class="btn btn-xlarge btn-clean-one">点击Uuuuuuup！</button>
                         </div>
@@ -19,4 +21,32 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        var con = new Vue({
+            el: '#con',
+            data: {
+                name:'{{ __user__.name }}',
+                email:'{{ __user__.email }}',
+                content:''
+            },
+            methods: {
+                submit: function(){
+                    if (this.name=='' || this.email=='' || this.content==''){
+                        alert('请检查名称，电子邮箱，建议是否有未填的信息~')
+                    }
+                    else{
+                        var that = this
+                        axios.post('/comments', {
+                            content: this.content.trim(),
+                            name: this.name.trim(),
+                            email: this.email.trim()
+                        }).then(function () {
+                            that.content = ''
+                            alert(response.data)
+                        })
+                    }
+                }
+            }
+        })
+    </script>
 {% endblock %}

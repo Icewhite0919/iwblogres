@@ -19,12 +19,15 @@ async def create_pool(loop, **kw):
     )
 
 
-async def select(sql, args, size=None):
+async def select(sql, args, size=None, like=None):
     logging.log(1, sql)
     global __pool
     with (await __pool) as conn:
         cur = await conn.cursor(aiomysql.DictCursor)
-        await cur.execute(sql.replace('?', '%s'), args or ())
+        if like:
+            await cur.execute(sql.replace('?', '%s') % tuple(args))
+        else:
+            await cur.execute(sql.replace('?', '%s'), args or ())
         if size:
             rs = await cur.fetchmany(size)
         else:
@@ -35,11 +38,11 @@ async def select(sql, args, size=None):
 
 
 async def execute(sql, args):
-    logging.log(1,sql)
+    logging.log(1, sql)
     with (await __pool) as conn:
         try:
             cur = await conn.cursor()
-            await cur.execute(sql.replace('?', '%s'),args)
+            await cur.execute(sql.replace('?', '%s'), args)
             affected = cur.rowcount
             await cur.close()
         except BaseException as e:
@@ -168,7 +171,7 @@ class Model(dict, metaclass=ModelMetaclass):
         return cls(**rs[0])
 
     @classmethod
-    async def findAll(cls, where=None, args=None, **kw):
+    async def findAll(cls, where=None, args=None, union=None, like=False, **kw):
         'find objects by where clause.'
         sql = [cls.__select__]
         if where and not isinstance(where, list):
@@ -197,8 +200,25 @@ class Model(dict, metaclass=ModelMetaclass):
                 args.extend(limit)
             else:
                 raise ValueError('Invalid limit value: %s' % str(limit))
-        rs = await select(' '.join(sql), args)
+        if union and isinstance(union, list):
+            sql.append('union '+ cls.__select__)
+            sql.append('where')
+            for i in union[0]:
+                sql.append('`' + i + '`' + '=? and')
+            sql[-1] = sql[-1].replace(' and', '')
+            for arg in union[1]:
+                args.append(arg)
+        if like:
+            sql = ' '.join(sql).replace('=',' ')
+        else:
+            sql = ' '.join(sql)
+        rs = await select(sql, args, like=like)
         return [cls(**r) for r in rs]
+
+    async def remove(self):
+        args = [self.getValue(self.__primary_key__)]
+        rows = await execute(self.__delete__, args)
+        return rows
 
     async def save(self):
         args = list(map(self.getValueOrDefault, self.__fields__))

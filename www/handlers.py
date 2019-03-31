@@ -5,16 +5,17 @@ import os
 import re
 import time
 import uuid
-
-from aiohttp import web
+import sendgrid
 import logging;logging.basicConfig(level=logging.INFO)
 
+from sendgrid.helpers.mail import *
+from aiohttp import web
 from _sha256 import sha256
 from hmac import HMAC
 from www.apis import APIValueError, APIError
 from www.config import configs
 from www.coroweb import get, post
-from www.models import User, Comment, Blog, next_id
+from www.models import User, Comment, Blog, next_id, Unactived_user, Contact
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 COOKIE_NAME = 'iwsession'
@@ -134,33 +135,32 @@ async def api_contact_getter(request):
 
 @post('/authenticate')
 async def api_user_authenticate(request, *, email, passwd):
-    print(email, passwd)
     if not email:
-        raise APIValueError('email', 'Invalid email.')
+        raise APIValueError('email', '空邮箱')
     if not passwd:
-        raise APIValueError('passwd', 'Invalid password.')
+        raise APIValueError('passwd', '空密码')
     users = await User.findAll('email', [email])
     if len(users) == 0:
-        raise APIValueError('email', 'Email not exist.')
+        raise APIValueError('email', '用户不存在或邮箱输入有误')
     user = users[0]
     if not validate_password(base64.b64decode(user.passwd.encode()), passwd):
-        raise APIValueError('passwd', 'Invalid password.')
+        raise APIValueError('passwd', '密码不正确')
     referer = request.headers.get('Referer')
     r = web.HTTPFound(referer or '/')
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
     return r
 
-@get('/signout')
+
+@post('/signout')
 def api_user_signout(request):
     referer = request.headers.get('Referer')
-    print(referer)
     r = web.HTTPFound(referer or '/')
     r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
     logging.info('user signed out.')
     return r
 
 
-@post('/users')
+@post('/registe')
 async def api_register_user(*, email, name, passwd):
     if not name or not name.strip():
         raise APIValueError('name')
@@ -168,21 +168,34 @@ async def api_register_user(*, email, name, passwd):
         raise APIValueError('email')
     if not passwd:
         raise APIValueError('passwd')
-    users = await User.findAll('email=?', [email])
+    users = await User.findAll('email', [email])
     if len(users) > 0:
-        raise APIError('register:failed', 'email', 'Email is already in use.')
+        return '您的邮箱已经被使用了呢，如果被人恶意注册请联系站主，站主邮箱是724900477@qq.com~'
+    users = await Unactived_user.findAll('email', [email])
+    if len(users) > 0:
+        for u in users:
+            if ((time.time()-u.created_at) // 60) < 15:
+                return '您的邮箱已经注册，请在规定时间内点击邮箱链接激活~'
     uid = next_id()
     en_passwd = encrypt_password(passwd)
-    print(uid, name, email, base64.b64encode(en_passwd).decode())
-    user = User(id=uid, name=name.strip(), email=email, passwd=base64.b64encode(en_passwd).decode())
+    try:
+        sg = sendgrid.SendGridAPIClient(apikey='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')
+        from_email = Email("byevaine@outlook.com")
+        to_email = Email("724900477@qq.com")
+        subject = "[小站账号激活]" + name + "，这里有一封激活账户的邮件！"
+        content = Content("text/html", '请点击下面链接激活账户：<a href="http://127.0.0.1:9001/active/'+uid+'">神秘链接</a>')
+        mail = Mail(from_email, subject, to_email, content)
+        sg.client.mail.send.post(request_body=mail.get())
+    except:
+        return '发送激活邮件失败，请稍后重试'
+    user = Unactived_user(id=uid, name=name.strip(), email=email, passwd=base64.b64encode(en_passwd).decode(), active_code=uid)
     await user.save()
-    return '添加成功'
+    return '您已注册成功，请在15分钟内点击发送到您邮箱中的链接激活账户即可登录~'
 
 
 @post('/blogs')
 async def api_add_blog(*, name, intro, body, img):
     uid = next_id()
-    print(name, intro, body)
     with open('./static/images/blogintro/' + uid + '.png', 'wb') as store:
         store.write(base64.b64decode(img[22:].encode()))
     # body = base64.b64decode(body).decode() #取
@@ -190,22 +203,85 @@ async def api_add_blog(*, name, intro, body, img):
     await blog.save()
 
 
-@post('/imgurl')
+@post('/blogimg')
 async def api_save_img(**kw):
     imgid = next_imgid()
     with open('./static/images/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''), 'wb') as store:
         store.write(kw['upload'].file.read())
-    return dict(uploaded=1, url='/img/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''))
+    return dict(uploaded=1, url='/img/blogimg/' + imgid + '.' + kw['upload'].content_type.replace('image/', ''))
+
+
+@post('/userimg')
+async def api_save_userimg(request, *, img):
+    imgid = request.__user__.id
+    with open('./static/images/userimg/' + imgid + '.png', 'wb') as store:
+        store.write(base64.b64decode(img[22:].encode()))
 
 
 @get('/img/{dictionary}/{filename}')
-async def staticGetter(*, dictionary, filename):
+async def api_getter_img(*, dictionary, filename):
     with open('./static/images/'+ dictionary + '/' + filename, 'rb') as f:
         return f.read()
 
 
-@post('/comments')
-async def api_submit_comments(*, blogid, name, email, website, content):
-    comment = Comment(blog_id=blogid, user_id='null', user_name=name, user_image='138649796585137407.jpg', content=content)
-    await comment.save()
+@get('/active/{active_code}')
+async def api_user_active(request, *, active_code):
+    users = await Unactived_user.findAll('active_code',[active_code])
+    if len(users) == 0:
+        return '注册验证不存在？请重新注册'
+    for u in users:
+        if ((time.time()-u.created_at) // 60) < 15:
+            user = User(id=u.id, email=u.email, passwd=u.passwd, name=u.name,
+                        created_at=u.created_at, image='/userimg/' + u.id + '.png')
+            rows = await u.remove()
+            if rows == 1:
+                with open('./static/images/userimg/' + u.id + '.png', 'wb') as store:
+                    with open('./static/images/userimg/default.png', 'rb') as copy:
+                        store.write(copy.read())
+                await user.save()
+                return '激活成功啦，快去登录吧~！'
+    return '注册验证不存在或验证时间已过？请再试一次吧~！'
 
+
+@post('/comments')
+async def api_submit_comments(request, *, blogid, name, email, website, content):
+    if not name or not email or not content:
+        return '请检查名称，电子邮箱，评论是否有未填的信息~'
+    comment = Comment(blog_id=blogid, user_id=request.__user__.id if request.__user__ else 'default',
+                      user_name=name, user_image=request.__user__.image if request.__user__ else '/userimg/default.jpg',
+                      user_website=website, user_email=email, content=content)
+    await comment.save()
+    return '评论成功~等待审核=w='
+
+
+@post('/contact')
+async def api_submit_contact(*, email, name, content):
+    if not email or not name or not content:
+        return '请检查名称，电子邮箱，建议是否有未填的信息~'
+    uid = next_id()
+    contact = Contact(id=uid, email=email, name=name, content=content, created_at=time.time())
+    await contact.save()
+    return '感谢提议，如果联系方式没有错误我将在不久的将来给你回复~！'
+
+
+@post('/search')
+async def api_article_search(request,*, keyword):
+    blogs = iter(await Blog.findAll(where=['name'], args=["like '%"+ keyword +"%'"],
+                                    union=[['summary'], ["like '%"+ keyword +"%'"]],
+                                    like=True))
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
+    rows = []
+    while True:
+        try:
+            rows.append([])
+            rows[-1].append(next(blogs))
+            rows[-1].append(next(blogs))
+        except StopIteration:
+            if len(rows[-1]) == 0:
+                rows.pop(-1)
+            break
+    return {
+        '__template__': '__index__.html',
+        'rows': rows,
+        'news': news
+    }

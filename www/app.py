@@ -47,7 +47,6 @@ async def auth_factory(app, handler):
         logging.info('check user: %s %s' % (request.method, request.path))
         request.__user__ = None
         cookie_str = request.cookies.get(COOKIE_NAME)
-        print(cookie_str)
         if cookie_str:
             user = await cookie2user(cookie_str)
             if user:
@@ -96,7 +95,6 @@ async def response_factory(app, handler):
                 r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
-                print(request.__user__)
                 return resp
         if isinstance(r, int) and r >= 100 and r < 600:
             return web.Response(r)

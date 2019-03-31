@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="../static/css/style.css" id="theme-styles">
@@ -12,12 +13,66 @@
         <script src="../static/js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
     <![endif]-->
     <title>{% block title %} 冰白 {% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="../static/js/modernizr.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function login(){
+            axios.post('/authenticate',{
+                email: $('#email').val().trim(),
+                passwd: $('#passwd').val().trim()
+            }).then(response => {
+                window.location.replace(window.location.href)
+            })
+        }
+        function signout(){
+            axios.post('/signout',{}).then(response => {
+                window.location.replace(window.location.href)
+            })
+        }
+        function validateEmail(email){
+            var re = /^[a-z0-9\.\-\_]+@[a-z0-9\-\_]+(\.[a-z0-9\.-\_]+){1,4}$/
+            return re.test(email.toLowerCase())
+        }
+        function registe(){
+            var email = $('#reemail').val().trim().toLowerCase()
+            var name = $('#rename').val().trim()
+            var password1 = $('#password1').val().trim()
+            var password2 = $('#password2').val().trim()
+            if(!name){
+                alert('用户名不能为空')
+            }
+            if(!validateEmail(email)){
+                alert('请输入正确的Email地址')
+            }
+            if(password1 !== password2){
+                alert('两次输入的口令不一致')
+            }
+            if(password1.length < 6){
+                alert('口令长度至少为6个字符')
+            }
+            axios.post('/registe',{
+                email: email,
+                name: name,
+                passwd: password1
+            })
+        }
+        function search(){
+            var keyword = $('#keyword').val()
+            axios.post('/search',{
+                keyword: keyword
+            }).then(response => document.write(response.data))
+        }
+    </script>
 </head>
 <body>
 <header>
     <div class="widewrapper masthead">
         <div class="container">
-            <a href="index.html" id="logo">
+            <a href="/" id="logo">
                 <img src="../static/img/logo.png" alt="clean Blog">
             </a>
 
@@ -56,7 +111,7 @@
                     border-radius: 30px;
                     width: 60px;
                     height: 60px;
-                    background: url("../static/images/userimg/138649796585137407.jpg") no-repeat center;
+                    background: url("../static/images{{ __user__.image }}") no-repeat center;
                     background-size: 60px;
                 }
                 #info a:hover{
@@ -66,7 +121,7 @@
             <div id="info" class="clean-breadcrumb" style="padding-top: 0.5em;">
                 {% if __user__ %}
                 <a href="">&nbsp;&nbsp;欢迎回来，{{ __user__.name }}</a>&nbsp;&nbsp;/
-                <a href="" id="sign" @click="signout">&nbsp;&nbsp;退出登录</a>
+                <a href="" onclick="signout()">&nbsp;&nbsp;退出登录</a>
                 {% else %}
                 <a href="" data-toggle="modal" data-target="#login">&nbsp;&nbsp;登录</a>&nbsp;&nbsp;/
                 <a href="" data-toggle="modal" data-target="#register">&nbsp;&nbsp;注册</a>
@@ -80,15 +135,15 @@
                         </button>
                         <div class="col-md-8 col-md-offset-2 clean-superblock" id="sub">
                             <h2>注册</h2>
-                            <form id="vmregister" class="contact-form">
-                                <input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">
-                                <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
-                                <input type="password" v-model="password1" placeholder="输入登录密码" class="form-control input-lg">
-                                <input type="password" v-model="password2" placeholder="确认登录密码" class="form-control input-lg">
+                            <div id="vmregister" class="contact-form">
+                                <input type="text" id="rename" placeholder="昵称/姓名" class="form-control input-lg">
+                                <input type="email" id="reemail" placeholder="电子邮箱" class="form-control input-lg">
+                                <input type="password" id="password1" placeholder="输入登录密码" class="form-control input-lg">
+                                <input type="password" id="password2" placeholder="确认登录密码" class="form-control input-lg">
                                 <div class="buttons clearfix">
-                                    <button @click="submit" class="btn btn-xlarge btn-clean-one">提交</button>
+                                    <button onclick="registe()" class="btn btn-xlarge btn-clean-one">提交</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="modal-footer">
                         </div>
@@ -103,14 +158,14 @@
                         </button>
                         <div class="col-md-8 col-md-offset-2 clean-superblock" id="log">
                             <h2>登录</h2>
-                            <form id="vmlogin" class="contact-form">
+                            <div id="vmlogin" class="contact-form">
                                 <!--<input type="text" v-model="name" placeholder="昵称/姓名" class="form-control input-lg">-->
-                                <input type="email" v-model="email" placeholder="电子邮箱" class="form-control input-lg">
-                                <input type="password" v-model="passwd" placeholder="输入登录密码" class="form-control input-lg">
+                                <input type="email" id="email" placeholder="电子邮箱" class="form-control input-lg">
+                                <input type="password" id="passwd" placeholder="输入登录密码" class="form-control input-lg">
                                 <div class="buttons clearfix">
-                                    <button @click="submitlogin" class="btn btn-xlarge btn-clean-one">登录</button>
+                                    <button onclick="login()" class="btn btn-xlarge btn-clean-one">登录</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="modal-footer">
                         </div>
@@ -118,9 +173,9 @@
                 </div>
             </div>
             <div class="clean-searchbox">
-                <form action="#" method="get" accept-charset="utf-8">
-                    <input class="searchfield" id="searchbox" type="text" placeholder="输入关键字...">
-                    <button class="searchbutton" type="submit">
+                <form accept-charset="utf-8">
+                    <input class="searchfield" id="keyword" type="text" placeholder="输入关键字...">
+                    <button class="searchbutton" onclick="search()">
                         <i class="fa fa-search"></i>
                     </button>
                 </form>
@@ -169,37 +224,5 @@
         Copyright &copy; 2019 . Ice White
     </div>
 </footer>
-<script src="../static/js/vue.js"></script>
-<script src="../static/js/jquery.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/modernizr.js"></script>
-<script src="../static/js/axios.min.js"></script>
-<script>
-    var vmlogin = new Vue({
-        el:'#vmlogin',
-        data:{
-            email: '',
-            passwd: ''
-        },
-        methods: {
-            submitlogin: function () {
-                axios.post('/authenticate',{
-                    email: this.email.trim(),
-                    passwd: this.passwd.trim()
-                })
-                    .then(Response.redirect(window.location.href))
-            }
-        }
-    })
-    var sign = new Vue({
-        el:'#sign',
-        methods: {
-            signout: function () {
-                axios.get('/signout')
-                    .then(Response.redirect(window.location.href))
-            }
-        }
-    })
-</script>
 </body>
 </html>
