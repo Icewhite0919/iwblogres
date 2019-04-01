@@ -227,3 +227,6 @@ class Model(dict, metaclass=ModelMetaclass):
         if rows != 1:
             logging.warning('failed to insert record: affected rows: %s' % rows)
 
+
+    async def update(self):
+        args = [self.getValue(self.__primary_key__)]

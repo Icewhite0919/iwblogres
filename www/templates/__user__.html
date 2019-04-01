@@ -1,7 +1,7 @@
 {% extends '__base__.html' %}
 {% block title %}个人信息{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="../static/css/cropper.min.css">
+<link rel="stylesheet" href="https://cdn.bootcss.com/cropper/4.0.0/cropper.min.css">
 <link rel="stylesheet" href="../static/css/ImgCropping.css">
 <div class="widewrapper main">
     <div class="container">
@@ -39,13 +39,13 @@
             </div>
             <!--图片裁剪框 end-->
             <div class="col-md-6 col-md-offset-3 clean-superblock" id="contact" style="text-align: center">
-                <h3>个人中心</h3>
+                <h2>个人中心</h2>
                 <a id="replaceImg">
                     <img id="finalImg" src="/img{{ __user__.image }}" class="img-circle img-responsive" width="45%"
                          style="margin-left: 27.5%;"></a>
                 <form id="con" accept-charset="utf-8" class="contact-form">
-                    <div class="panel-group" id="info">
-                        <div class="panel panel-default" style="border-radius: 25px">
+                    <div class="panel-group" id="info" style="margin-top: 1.5em">
+                        <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
                             <div class="panel-heading" style="border-radius: 25px">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="info" href="#nameCollapse">
@@ -54,22 +54,28 @@
                                 </h4>
                             </div>
                         </div>
+                        <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
+                            <div class="panel-heading" style="border-radius: 25px">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="info" href="#emailCollapse">
+                                        {{ __user__.email }}
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
+                            <div class="panel-heading" style="border-radius: 25px">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="info" href="#passwdCollapse">
+                                        点击修改密码
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
-            <script type="text/javascript" src="../static/js/cropper.min.js"></script>
-            <script type="text/javascript">
-                // img: $('#tailoringImg').cropper('getCroppedCanvas').toDataURL('image/png')
-                ClassicEditor.create(document.querySelector('#editor'), {
-                    ckfinder: {
-                        uploadUrl: '/imgurl'
-                    }
-                }).then(editor => {
-                    this.editor = editor
-                }).catch(error => {
-                    console.error(error);
-                })
-            </script>
+            <script type="text/javascript" src="https://cdn.bootcss.com/cropper/4.0.0/cropper.min.js"></script>
             <script type="text/javascript">
 
                 //弹出框水平垂直居中
@@ -155,9 +161,10 @@
                         var cas = $('#tailoringImg').cropper('getCroppedCanvas');//获取被裁剪后的canvas
                         var base64url = cas.toDataURL('image/png'); //转换为base64地址形式
                         $("#finalImg").prop("src", base64url);//显示为图片的形式
-                        console.log(base64url)
-
                         //关闭裁剪框
+                        axios.post('/userimg',{
+                            img: $('#tailoringImg').cropper('getCroppedCanvas').toDataURL('image/png')
+                        })
                         closeTailor();
                     }
                 });

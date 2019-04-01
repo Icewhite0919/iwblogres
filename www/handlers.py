@@ -143,12 +143,26 @@ async def api_user_authenticate(request, *, email, passwd):
     if len(users) == 0:
         raise APIValueError('email', '用户不存在或邮箱输入有误')
     user = users[0]
-    if not validate_password(base64.b64decode(user.passwd.encode()), passwd):
+    if user.passwd != passwd:
         raise APIValueError('passwd', '密码不正确')
     referer = request.headers.get('Referer')
     r = web.HTTPFound(referer or '/')
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
     return r
+
+
+@post('/ss')
+async def api_user_salt(*, email):
+    user = await User.findAll('email',email)
+    if len(user) == 0:
+        return base64.b64encode(os.urandom(8)).decode()
+    else:
+        return base64.b64encode(base64.b64decode(user[0].passwd.encode())[:8]).decode()
+
+
+@post('/print')
+async def api_print_test(**kw):
+    print(kw['ss'])
 
 
 @post('/signout')
@@ -177,10 +191,9 @@ async def api_register_user(*, email, name, passwd):
             if ((time.time()-u.created_at) // 60) < 15:
                 return '您的邮箱已经注册，请在规定时间内点击邮箱链接激活~'
     uid = next_id()
-    en_passwd = encrypt_password(passwd)
     try:
         sg = sendgrid.SendGridAPIClient(apikey='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')
-        from_email = Email("byevaine@outlook.com")
+        from_email = Email("icewhite@outlook.com")
         to_email = Email(email=email)
         subject = "[小站账号激活]" + name + "，这里有一封激活账户的邮件！"
         content = Content("text/html", '请点击下面链接激活账户：<a href="http://127.0.0.1:9001/active/'+uid+'">神秘链接</a>')
@@ -188,7 +201,7 @@ async def api_register_user(*, email, name, passwd):
         sg.client.mail.send.post(request_body=mail.get())
     except:
         return '发送激活邮件失败，请稍后重试'
-    user = Unactived_user(id=uid, name=name.strip(), email=email, passwd=base64.b64encode(en_passwd).decode(), active_code=uid)
+    user = Unactived_user(id=uid, name=name.strip(), email=email, passwd=passwd, active_code=uid)
     await user.save()
     return '您已注册成功，请在15分钟内点击发送到您邮箱中的链接激活账户即可登录~'
 
@@ -213,9 +226,18 @@ async def api_save_img(**kw):
 
 @post('/userimg')
 async def api_save_userimg(request, *, img):
-    imgid = request.__user__.id
-    with open('./static/images/userimg/' + imgid + '.png', 'wb') as store:
-        store.write(base64.b64decode(img[22:].encode()))
+    if request.__user__:
+        imgid = request.__user__.id
+        with open('./static/images/userimg/' + imgid + '.png', 'wb') as store:
+            store.write(base64.b64decode(img[22:].encode()))
+
+
+@post('/username')
+async def api_modify_name(request, *, name):
+    if request.__user__:
+        user = await User.find(request.__user__.id)
+
+
 
 
 @get('/img/{dictionary}/{filename}')
@@ -233,11 +255,11 @@ async def api_user_active(request, *, active_code):
         if ((time.time()-u.created_at) // 60) < 15:
             user = User(id=u.id, email=u.email, passwd=u.passwd, name=u.name,
                         created_at=u.created_at, image='/userimg/' + u.id + '.png')
+            with open('./static/images/userimg/' + u.id + '.png', 'wb') as store:
+                with open('./static/images/userimg/default.jpg', 'rb') as copy:
+                    store.write(copy.read())
             rows = await u.remove()
             if rows == 1:
-                with open('./static/images/userimg/' + u.id + '.png', 'wb') as store:
-                    with open('./static/images/userimg/default.png', 'rb') as copy:
-                        store.write(copy.read())
                 await user.save()
                 return '激活成功啦，快去登录吧~！'
     return '注册验证不存在或验证时间已过？请再试一次吧~！'
@@ -289,7 +311,15 @@ async def api_article_search(request,*, keyword):
 
 @get('/user')
 async def api_user_info(request):
+    news = await Blog.findAll(orderBy='`created_at` DESC', limit=3)
     return {
-        '__template__': '__user__.html'
+        '__template__': '__user__.html',
+        'news': news
     }
 
+#
+# @post('/username')
+# async def api_user_name(request, *, passwd, name):
+#     user = User.find(request.__user__.id)
+#     if user:
+#
