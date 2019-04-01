@@ -192,13 +192,14 @@ async def api_register_user(*, email, name, passwd):
                 return '您的邮箱已经注册，请在规定时间内点击邮箱链接激活~'
     uid = next_id()
     try:
-        sg = sendgrid.SendGridAPIClient(apikey='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')
-        from_email = Email("icewhite@outlook.com")
+        sg = sendgrid.SendGridAPIClient(apikey='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')
+        from_email = Email("724900477@qq.com")
         to_email = Email(email=email)
         subject = "[小站账号激活]" + name + "，这里有一封激活账户的邮件！"
         content = Content("text/html", '请点击下面链接激活账户：<a href="http://127.0.0.1:9001/active/'+uid+'">神秘链接</a>')
         mail = Mail(from_email, subject, to_email, content)
-        sg.client.mail.send.post(request_body=mail.get())
+        response = sg.client.mail.send.post(request_body=mail.get())
+        logging.info(response.status_code+response.body+response.headers)
     except:
         return '发送激活邮件失败，请稍后重试'
     user = Unactived_user(id=uid, name=name.strip(), email=email, passwd=passwd, active_code=uid)

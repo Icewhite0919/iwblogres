@@ -48,15 +48,6 @@
                         <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
                             <div class="panel-heading" style="border-radius: 25px">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="info" href="#nameCollapse">
-                                        {{ __user__.name }}
-                                    </a>
-                                </h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
-                            <div class="panel-heading" style="border-radius: 25px">
-                                <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="info" href="#emailCollapse">
                                         {{ __user__.email }}
                                     </a>
@@ -66,10 +57,35 @@
                         <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
                             <div class="panel-heading" style="border-radius: 25px">
                                 <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="info" href="#nameCollapse">
+                                        {{ __user__.name }}
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div id="nameCollapse" class="panel-collapse collapse">
+                            <input type="text" id="newname" placeholder="修改后的昵称/姓名" class="form-control input-lg">
+                            <input type="text" id="auth" placeholder="输入密码" class="form-control input-lg">
+                            <div class="buttons clearfix">
+                                <button id="modifyName" type="submit" class="btn btn-xlarge btn-clean-one">确认修改昵称</button>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" style="border-radius: 25px;margin-top: 1em">
+                            <div class="panel-heading" style="border-radius: 25px">
+                                <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="info" href="#passwdCollapse">
                                         点击修改密码
                                     </a>
                                 </h4>
+                            </div>
+                        </div>
+                        <div id="passwdCollapse" class="panel-collapse collapse">
+                            <input type="text" id="opasswd" placeholder="输入原密码" class="form-control input-lg">
+                            <input type="text" id="newpasswd1" placeholder="输入新密码" class="form-control input-lg">
+                            <input type="text" id="newpasswd2" placeholder="确认新密码" class="form-control input-lg">
+                            <div class="buttons clearfix">
+                                <button id="modifyPasswd" type="submit" class="btn btn-xlarge btn-clean-one">确认修改密码
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -162,7 +178,7 @@
                         var base64url = cas.toDataURL('image/png'); //转换为base64地址形式
                         $("#finalImg").prop("src", base64url);//显示为图片的形式
                         //关闭裁剪框
-                        axios.post('/userimg',{
+                        axios.post('/userimg', {
                             img: $('#tailoringImg').cropper('getCroppedCanvas').toDataURL('image/png')
                         })
                         closeTailor();
