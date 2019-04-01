@@ -181,7 +181,7 @@ async def api_register_user(*, email, name, passwd):
     try:
         sg = sendgrid.SendGridAPIClient(apikey='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')
         from_email = Email("byevaine@outlook.com")
-        to_email = Email("724900477@qq.com")
+        to_email = Email(email=email)
         subject = "[小站账号激活]" + name + "，这里有一封激活账户的邮件！"
         content = Content("text/html", '请点击下面链接激活账户：<a href="http://127.0.0.1:9001/active/'+uid+'">神秘链接</a>')
         mail = Mail(from_email, subject, to_email, content)
@@ -285,3 +285,11 @@ async def api_article_search(request,*, keyword):
         'rows': rows,
         'news': news
     }
+
+
+@get('/user')
+async def api_user_info(request):
+    return {
+        '__template__': '__user__.html'
+    }
+
