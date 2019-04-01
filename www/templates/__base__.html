@@ -43,16 +43,13 @@
                 axios.post('/authenticate', {
                     email: email,
                     passwd: btoa(hashed)
-                }).then(response => window.location.reload(true))
+                }).then(response => window.location.reload())
             })
         }
 
         function signout() {
             axios.post('/signout', {}).then(response => {})
-            var exp = new Date();
-            exp.setTime(exp.getTime() + 30*24*60*60*1000);
-            document.cookie = "deleted=-1;expires=" + exp.toGMTString();
-            window.location.reload(true)
+            window.location.reload()
         }
 
         function validateEmail(email) {
@@ -138,7 +135,7 @@
     <div class="widewrapper subheader">
         <div class="container">
             <div class="clean-breadcrumb" style="margin-top: 0.6em;margin-bottom: 0.4em;margin-left: 0.8em">
-                <a href="/user">
+                <a {% if __user__ %} href="/user" {% endif %}>
                     <div class="headImg"></div>
                 </a>
             </div>
@@ -150,7 +147,6 @@
                     background: url("../static/images{{ __user__.image }}") no-repeat center;
                     background-size: 60px;
                 }
-
                 #info a:hover {
                     color: red;
                 }

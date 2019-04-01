@@ -192,7 +192,7 @@ async def api_register_user(*, email, name, passwd):
                 return '您的邮箱已经注册，请在规定时间内点击邮箱链接激活~'
     uid = next_id()
     try:
-        sg = sendgrid.SendGridAPIClient(apikey='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')
+        sg = sendgrid.SendGridAPIClient(apikey='')
         from_email = Email("724900477@qq.com")
         to_email = Email(email=email)
         subject = "[小站账号激活]" + name + "，这里有一封激活账户的邮件！"
