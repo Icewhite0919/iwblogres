@@ -11,6 +11,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet'
           type='text/css'>
     <link rel="stylesheet" href="../static/css/style.css" id="theme-styles">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!--[if lt IE 9]>
     <script src="../static/js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
     <![endif]-->
@@ -43,7 +44,10 @@
                 axios.post('/authenticate', {
                     email: email,
                     passwd: btoa(hashed)
-                }).then(response => window.location.reload())
+                }).then(response => {
+                    window.location.replace(response.data)
+                    window.location.reload()
+                })
             })
         }
 

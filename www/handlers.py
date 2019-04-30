@@ -153,6 +153,8 @@ async def api_user_authenticate(request, *, email, passwd):
 
 @post('/ss')
 async def api_user_salt(*, email):
+    if not email:
+        raise APIValueError('email', '空邮箱')
     user = await User.findAll('email',email)
     if len(user) == 0:
         return base64.b64encode(os.urandom(8)).decode()
